@@ -1,0 +1,12 @@
+# -------------------------------------------------------------------------------------------------
+# KVM QEMU Ansible Role 
+# -------------------------------------------------------------------------------------------------
+
+- name: Set up KVM platform 
+  include_tasks: install.yml
+
+- name: Configure Virtual Machines
+  include_tasks: vm.yml
+  with_items: "{{ vm }}"
+  # loop_control: 
+  #   loop_var: vm

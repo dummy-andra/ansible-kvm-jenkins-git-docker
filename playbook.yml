@@ -1,0 +1,12 @@
+---
+
+ # Create Qemu KVM playbook 
+- name: Provision Virtual Machines
+  hosts: 127.0.0.1
+  connection: local
+  become: true
+  vars_files:
+    - inventories/group_vars/all.yml
+  roles: 
+    - kvm
+

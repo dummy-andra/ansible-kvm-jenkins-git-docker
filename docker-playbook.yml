@@ -1,0 +1,19 @@
+---
+- name: Install Docker
+  hosts: 192.168.122.161 
+  become: true
+  vars_files:
+    - inventories/group_vars/all.yml
+
+  roles:
+    - docker
+    # - jenkins
+    # - git
+ 
+
+  handlers: 
+  - name: Restart Docker
+    systemd:
+      name: docker
+      state: restarted
+ 

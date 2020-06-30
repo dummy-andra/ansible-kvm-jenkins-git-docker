@@ -1,0 +1,33 @@
+- name: Update APT package cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 86400
+
+# - name: Tear down existing services
+#   docker_compose:
+#     project_src: docker-compose.yml
+#     state: absent
+
+- name: Copy docker-compose file on VM
+  template: 
+    src: templates/docker-compose-git.yml
+    dest: /home/andra/docker-compose.yml
+    
+
+- name: Create and start services
+  docker_compose:
+    project_src: /home/andra
+  register: output
+
+- debug:
+    var: output
+
+- name: Set logging
+  ufw:
+    logging: 'on'    
+
+- name: Allow all access to tcp port 8080
+  ufw:
+    rule: allow
+    port: '8080'
+    proto: jenkins

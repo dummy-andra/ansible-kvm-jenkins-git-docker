@@ -1,0 +1,24 @@
+  - name: Update APT package cache
+    apt:
+      update_cache: yes
+      cache_valid_time: 86400
+
+  # - name: Tear down existing services
+  #   docker_compose:
+  #     project_src: docker-compose.yml
+  #     state: absent
+
+  - name: Copy docker-compose file on VM
+    template: 
+      src: templates/docker-compose-jenkins.yml
+      dest: /home/andra/docker-compose.yml
+      
+
+  - name: Create and start services
+    docker_compose:
+      project_src: /home/andra
+    register: output
+
+  - debug:
+      var: output
+

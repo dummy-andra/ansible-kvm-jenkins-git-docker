@@ -1,0 +1,108 @@
+
+- name: Update APT package cache
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400
+
+# sudo apt-get install 
+- name: Install prerequisites for Docker repository and Docker Compose
+  apt:
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'gnupg-agent', 'python-pip', 'python3-pip', 'gnupg2', 'python3-setuptools', 'virtualenv']
+    state: latest
+    update_cache: yes
+  tags:
+    - docker
+  
+# curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+- name: Add Docker s official GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg 
+    state: present
+  tags:
+    - docker
+  
+# sudo apt-key fingerprint 
+- name: Verify that we have the key with the fingerprint
+  apt_key:
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    state: present
+  tags:
+    - docker
+  
+# sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
+- name: Set up the stable repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu  "{{ ansible_distribution_release }}" stable
+    state: present
+    update_cache: yes
+  tags:
+    - docker
+  
+# sudo apt-get update
+- name: Update apt packages
+  apt:
+    update_cache: yes
+  tags:
+    - docker
+  
+# sudo apt-get install docker-ce=18.03.*
+- name: Install docker
+  apt:
+    name: 
+    - docker-ce
+    - docker-ce-cli 
+    - containerd.io
+    state: latest
+    update_cache: yes
+  notify: Start docker on boot
+  tags:
+    - docker
+  
+# sudo groupadd docker
+- name: Create "docker" group
+  group:
+    name: "{{ docker_group }}"
+    state: present
+  tags:
+    - docker
+  
+# sudo usermod -aG docker ubuntu
+- name: Add remote "ubuntu" user to "docker" group
+  user:
+    name: "{{ user.name }}"
+    group: "{{ docker_group }}"
+    append: yes
+  tags:
+    - docker
+  
+#sudo apt-get install docker-compose
+
+- name: get version       
+  shell: 
+    echo $(uname -s)-$(uname -m) 
+  register: version
+
+- name: Install docker-compose
+  #remote_user: ubuntu
+  get_url: 
+    url : "https://github.com/docker/compose/releases/download/1.26.0//docker-compose-{{version.stdout}}"
+    dest: /usr/local/bin/docker-compose
+    mode: 'u+x,g+x'
+
+# - name: docker compose hard link      
+#   shell: 
+#     sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+
+- name: Install Docker Module for Python
+  pip:
+    name: docker
+
+
+
+- name: Install Docker-Compose Module for Python
+  pip:
+    name: 'docker-compose>=1.7.0'
+
+

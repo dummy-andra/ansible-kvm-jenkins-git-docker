@@ -1,0 +1,17 @@
+{% if vm.net is defined %}
+version: 2
+ethernets:
+  ens2:
+    dhcp4: true
+    dhcp6: true
+    addresses: ["{{ vm.net.ip }}"]
+    gateway4: {{ vm.net.gateway }}
+    nameservers:
+      addresses:  {{ vm.net.dns | to_json }}
+      search:     ["{{ vm.net.domain }}"]
+{% else %}
+version: 2
+ethernets:
+  ens2:
+    dhcp4: true
+{% endif %}

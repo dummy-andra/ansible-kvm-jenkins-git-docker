@@ -1,0 +1,37 @@
+user: 
+  name: user
+  full_name: name
+  passwd: hash pass
+  pub_key: pub key
+
+ansible_distribution_release: bionic
+
+     
+#ansible_python_interpreter: /usr/bin/python3
+     
+
+docker_group: docker
+
+
+
+
+vm: 
+  name: demo2
+  cpu: 1
+  mem: 5048
+  disk: 8G
+  bridge: virbr0
+  net: 
+    ip: 192.168.122.161/24
+    gateway: 192.168.1.1
+    #netmask:  255.255.255.0
+    domain: github.io
+    dns: 
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 9.9.9.9
+
+domain: github.io
+
+
